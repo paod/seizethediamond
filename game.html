@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Jquery is included here and available for use -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="ajaxupload.min.js"></script>
+    <!-- some basic styles for game setup -->
+    <style>
+      .viewport {
+        height: 500px;
+        width: 500px;
+        border: 1px solid black;
+        margin-bottom: 10px;
+        display: none;
+      }
+      .row {
+        display: table-row;
+      }
+      .game-space {
+        border: 1px dotted gray;
+        width: 50px;
+        height: 50px;
+        display: table-cell;
+      }
+      .ruby {
+        background-image: url(ruby.png);
+        background-repeat: no-repeat;
+        background-size: 40px 25px;
+        background-position: 4px 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="start_game">Start Game</button>
+    <div class="viewport"></div>
+  </body>
+</html>
+
+<script>
+//Render function is provided to draw the game board
+$(function(){
+  count = 0;
+  rubysXPosition = -1;
+  rubysYPosition = -1;
+  
+  $('#start_game').on('click', function(){
+    render();
+    var el = $(this);
+    el.attr('disabled', 'disabled');
+  });
+});
+
+$(document).keydown(function(e) {
+  var pythonposition = $('img').parent().attr('id');
+  var pythonxcoord = pythonposition[0];
+  var pythonycoord = pythonposition[1];
+
+    switch(e.which) {
+        case 37: // left
+        //console.log('left');
+        if (pythonycoord > 0) {
+          moveRuby(pythonxcoord, pythonycoord);
+          pythonycoord--;
+          $('img').remove();
+          $("div[id=" + pythonxcoord + pythonycoord + "]").append("<img src='python.png' height=45 width=45>");
+          count++;
+        }
+        break;
+
+        case 38: // up
+        //console.log('up');
+        if (pythonxcoord > 0) {
+          moveRuby(pythonxcoord, pythonycoord);
+          pythonxcoord--;
+          $('img').remove();
+          $("div[id=" + pythonxcoord + pythonycoord + "]").append("<img src='python.png' height=45 width=45>");
+          count++;
+        }
+        break;
+
+        case 39: // right
+        //console.log('right');
+        if (pythonycoord < 9) {
+          moveRuby(pythonxcoord, pythonycoord);
+          pythonycoord++;
+          $('img').remove();
+          $("div[id=" + pythonxcoord + pythonycoord + "]").append("<img src='python.png' height=45 width=45>");
+          count++;
+        }
+        break;
+
+        case 40: // down
+        if (pythonxcoord < 9) {
+          moveRuby(pythonxcoord, pythonycoord);
+          pythonxcoord++;
+          $('img').remove();
+          $("div[id=" + pythonxcoord + pythonycoord + "]").append("<img src='python.png' height=45 width=45>");
+          count++;
+        }
+        break;
+        default: return; // exit this handler for other keys
+    }
+
+
+    console.log('Old Ruby (' + rubysXPosition + ', ' + rubysYPosition + ')');
+    if (pythonxcoord == rubysXPosition && pythonycoord == rubysYPosition){
+      window.alert('You took ' + count + ' moves.');
+    }
+    else {
+    }
+
+
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+});
+
+var rubyPositionOffGridX = function(rubyX){
+  if (rubyX + 1 < 10 && rubyX - 1 >= 0) {
+    return true;
+  }
+  return false;
+};
+
+var rubyPositionOffGridY = function(rubyY){
+  if (rubyY + 1 < 10 && rubyY - 1 >= 0) {
+    return true;
+  }
+  return false;
+};
+
+var moveRuby = function(pythonxcoord, pythonycoord){
+  var diffx = rubysXPosition - pythonxcoord;
+  var diffy = rubysYPosition - pythonycoord;
+  var direction = [];
+
+
+  if (diffx < 0) {
+    if (rubyPositionOffGridX(rubysXPosition + 1) && rubyPositionOffGridY(rubysYPosition)) {
+      direction.push('left');
+    }
+    else if (rubysYPosition + 1 < 10) {
+      direction.push('right');
+    }
+  }
+  if (diffx > 0) {
+    if (rubyPositionOffGridX(rubysXPosition - 1) && rubyPositionOffGridY(rubysYPosition)) {
+      direction.push('right');
+    }
+    else if (rubysYPosition - 1 >= 0) {
+      direction.push('left');
+    }
+  }
+  if (diffy < 0) {
+    if (rubyPositionOffGridX(rubysXPosition) && rubyPositionOffGridY(rubysYPosition - 1)) {
+      direction.push('up');
+    }
+    else if (rubysXPosition + 1 < 10) {
+      direction.push('down');
+    }
+
+  }
+  if (diffy > 0) {
+    if (rubyPositionOffGridX(rubysXPosition) && rubyPositionOffGridY(rubysYPosition + 1)) {
+      direction.push('down');
+    }
+    else if (rubysXPosition - 1 >= 0) {
+      direction.push('up');
+    }
+  }
+
+  if (diffx === 0) {
+    if (rubysXPosition - 1 >= 0) {
+      direction.push('up');
+    }
+    if (rubysXPosition + 1 < 10) {
+      direction.push('down');
+    }
+  }
+  if (diffy === 0) {
+    if (rubysYPosition + 1 < 10) {
+      direction.push('right');
+    }
+    if (rubysYPosition - 1 >= 0) {
+      direction.push('left');
+    }
+  }
+
+  var randnum = Math.floor(Math.random() * direction.length);
+  switch(direction[randnum]) {
+    case 'left': // down
+      rubysYPosition--;
+      break;
+    case 'right': // down
+      rubysYPosition++;
+      break;
+    case 'up': // down
+      rubysXPosition--;
+      break;
+    case 'down': // down
+      rubysXPosition++;
+      break;
+    default:
+      break;
+  }
+  console.log('Python: (' + pythonxcoord + ', ' + pythonycoord + ')');
+  console.log('New Ruby: (' + rubysXPosition + ', ' + rubysYPosition + ')');
+  console.log('Diff: (' + diffx + ', ' + diffy + ')');
+  console.log(direction);
+  $('.ruby').removeClass('ruby');
+  $("div[id=" + rubysXPosition + rubysYPosition + "]").addClass('ruby');
+};
+
+var render = function() {
+  $('.viewport').css('display', 'table');
+  var html = "";
+  for(var i=0; i<10; i++) {
+    html += "<div class='row'>";
+    for(var j=0; j<10; j++) {
+      html += "<div class='game-space' id="+i+""+j+">";
+      if(i === 0 && j === 0) {
+        html += "<img src='python.png' height=45 width=45>";
+      }
+      html += "</div>";
+    }
+    html += "</div>";
+  }
+  $('.viewport').html(html);
+
+  rubysXPosition = Math.floor(Math.random() * 10);
+  rubysYPosition = Math.floor(Math.random() * 10);
+  
+  var x = $("div[id=" + rubysXPosition + rubysYPosition + "]");
+  x.addClass('ruby');
+}
+
+</script>
