@@ -1,0 +1,1 @@
+Simple cat-n-mouse game. Python is the cat, and the gem is the mouse.
