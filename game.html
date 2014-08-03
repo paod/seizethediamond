@@ -3,7 +3,6 @@
   <head>
     <!-- Jquery is included here and available for use -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="ajaxupload.min.js"></script>
     <!-- some basic styles for game setup -->
     <style>
       .viewport {
@@ -102,7 +101,6 @@ $(document).keydown(function(e) {
     }
 
 
-    console.log('Old Ruby (' + rubysXPosition + ', ' + rubysYPosition + ')');
     if (pythonxcoord == rubysXPosition && pythonycoord == rubysYPosition){
       window.alert('You took ' + count + ' moves.');
     }
@@ -201,10 +199,6 @@ var moveRuby = function(pythonxcoord, pythonycoord){
     default:
       break;
   }
-  console.log('Python: (' + pythonxcoord + ', ' + pythonycoord + ')');
-  console.log('New Ruby: (' + rubysXPosition + ', ' + rubysYPosition + ')');
-  console.log('Diff: (' + diffx + ', ' + diffy + ')');
-  console.log(direction);
   $('.ruby').removeClass('ruby');
   $("div[id=" + rubysXPosition + rubysYPosition + "]").addClass('ruby');
 };
